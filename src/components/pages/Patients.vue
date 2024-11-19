@@ -1,32 +1,48 @@
 <template>
-  <div class="px-24 text-left w-full h-screen tracking-widest leading-loose">
-    <div class="font-bold text-4xl py-2">Focusing on Patients</div>
+  <div class="px-24 text-left w-screen h-screen">
+    <div class="font-bold text-4xl py-4">Focusing on Patients</div>
 
-    <!-- patient arrival  -->
-    <div class=" ">
-      <h1>Patient Arrival Means</h1>
-      <div style="position: relative; height: 35vh; width: 50vw">
-        <canvas id="arrivalModeChart" class="rounded-lg bg-green-200"></canvas>
+    <div class="grid grid-cols-2">
+      <!-- patient arrival  -->
+      <div class="mx-4">
+        <h1>Patient Arrival Means</h1>
+        <div style="position: relative; height: 40vh; width: 50vw">
+          <canvas id="arrivalModeChart" class="rounded-lg"></canvas>
+        </div>
+      </div>
+      <!-- patient gender -->
+      <div class="mx-4">
+        <h1>Patient Gender</h1>
+        <div style="position: relative; height: 40vh; width: 50vw">
+          <canvas id="genderModeChart" class="rounded-lg"></canvas>
+        </div>
       </div>
     </div>
 
-    <!-- patient time at triage -->
-    <div class=" ">
-      <h1 class="pt-4">Time taken a triage</h1>
-      <div style="position: relative; height: 35vh; width: 50vw">
-        <canvas
-          id="triageTimeDistChart"
-          class="rounded-lg bg-green-200"
-        ></canvas>
+    <div class="grid grid-cols-2">
+      <!-- patient age -->
+      <div class=" ">
+        <h1>Patient Age</h1>
+        <div style="position: relative; height: 35vh; width: 50vw">
+          <canvas id="ageDistChart" class="rounded-lg"></canvas>
+        </div>
+      </div>
+      <!-- mental state -->
+      <div class=" ">
+        <h1>Patient Mental State on Arrival</h1>
+        <div style="position: relative; height: 35vh; width: 50vw">
+          <canvas id="mentalStateChart" class="rounded-lg"></canvas>
+        </div>
       </div>
     </div>
+
     <!-- navigation button -->
     <div class="py-6 mx-auto">
       <RouterLink
-        to="/nurse-expert"
+        to="/nurse"
         class="capitalize rounded-full bg-gray-950 hover:bg-black w-fit px-4 py-2 scale-90 hover:cursor-pointer text-white"
       >
-        Find out What the Nurses & Experts said...
+        Find out the Nurses diagnosis...
       </RouterLink>
     </div>
   </div>
@@ -37,6 +53,7 @@ import Chart from "chart.js/auto";
 import Papa from "papaparse";
 import { triageDataPath } from "../../utility/constants";
 import { RouterLink } from "vue-router";
+import ChartDataLabels from "chartjs-plugin-datalabels"; // Import the datalabels plugin
 
 export default {
   data() {
@@ -69,7 +86,6 @@ export default {
     // Function to process and plot arrival means
     async patientArrivalMeans() {
       await this.loadCSVData();
-
       const arrivalCounts = {};
       this.triageData.forEach((entry) => {
         const mode = entry["Arrival mode"];
@@ -126,48 +142,178 @@ export default {
         },
       });
     },
-    async timeAtTriage() {
+
+    async genderModeChart() {
       await this.loadCSVData();
-
-      const binWidth = 1.5; // Set each bin range to 1.5
-      const minDuration = 0; // Start from 0
-      const maxDuration = 18; // End at 18
-
-      // Create bins for each range (0-1.5, 1.5-3.0, etc.)
-      const numBins = Math.ceil((maxDuration - minDuration) / binWidth);
-      const bins = Array(numBins).fill(0); // Initialize bins to 0
-
-      // Get the "KTAS duration_min" values and filter out any null or undefined values
-      const durationValues = this.triageData
-        .map((entry) => entry["KTAS duration_min"])
-        .filter((value) => value !== null && value !== undefined);
-
-      // Distribute data points into bins based on the bin width of 1.5
-      durationValues.forEach((value) => {
-        const binIndex = Math.min(Math.floor(value / binWidth), numBins - 1); // Ensure binIndex is within the range of bins
-        bins[binIndex]++;
+      const arrivalCounts = {};
+      this.triageData.forEach((entry) => {
+        const mode = entry["Sex"];
+        if (mode) {
+          arrivalCounts[mode] = (arrivalCounts[mode] || 0) + 1;
+        }
       });
 
-      // Generate the bin range labels for the y-axis (counts of patients in each bin)
-      const counts = bins; // Counts of patients per bin
+      // Sort the data by counts in descending order
+      const sortedArrivalCounts = Object.entries(arrivalCounts)
+        .sort((a, b) => b[1] - a[1]) // Sort by count (value) in descending order
+        .map(([key, value]) => ({ mode: key, count: value }));
 
-      // Prepare the data for the chart
-      const labels = counts; // Set the labels as the counts instead of the ranges
+      // Extract the sorted labels and data for the chart
+      const labels = sortedArrivalCounts.map((entry) => entry.mode);
+      const data = sortedArrivalCounts.map((entry) => entry.count);
 
-      // Create the histogram chart
-      new Chart(document.getElementById("triageTimeDistChart"), {
-        type: "bar", // Bar chart
+      // Total for calculating percentages
+      const total = data.reduce((sum, value) => sum + value, 0);
+
+      new Chart(document.getElementById("genderModeChart"), {
+        type: "doughnut",
         data: {
-          labels: labels, // Counts as x-axis labels
+          labels: labels,
           datasets: [
             {
-              label: "Average time at Triage in minutes",
-              data: bins,
+              label: "Nurse Diagnosis Chart",
+              data: data,
+              backgroundColor: ["#880808", "#00000"],
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            datalabels: {
+              formatter: (value, context) => {
+                const percentage = ((value / total) * 100).toFixed(1); // Calculate percentage
+                return `${percentage}%`; // Display percentage
+              },
+              color: "#fff", // Label text color
+              font: {
+                weight: "bold",
+              },
+              align: "center",
+            },
+            legend: {
+              position: "top", // Position the legend
+            },
+          },
+        },
+      });
+    },
+
+    async mentalStateChart() {
+      
+      await this.loadCSVData();
+      const arrivalCounts = {};
+      this.triageData.forEach((entry) => {
+        const mode = entry["Mental"];
+        if (mode) {
+          arrivalCounts[mode] = (arrivalCounts[mode] || 0) + 1;
+        }
+      });
+
+      // Sort the data by counts in descending order
+      const sortedArrivalCounts = Object.entries(arrivalCounts)
+        .sort((a, b) => b[1] - a[1]) // Sort by count (value) in descending order
+        .map(([key, value]) => ({ mode: key, count: value }));
+
+      // Extract the sorted labels and data for the chart
+      const labels = sortedArrivalCounts.map((entry) => entry.mode);
+      const data = sortedArrivalCounts.map((entry) => entry.count);
+
+      // Total for calculating percentages
+      const total = data.reduce((sum, value) => sum + value, 0);
+
+      new Chart(document.getElementById("mentalStateChart"), {
+        type: "bar",
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: "Patient Mental State",
+              data: data,
               backgroundColor: "#000000", // Bar color
               borderWidth: 0.5,
               borderRadius: 10, // Rounded corners for the bars
               categoryPercentage: 0.9, // Control the width of each bar (reduce category percentage to reduce space between bars)
               barPercentage: 1, // Ensure bars fit within each category without gaps
+        
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: {
+              beginAtZero: true, // Ensure bars start at zero on the x-axis
+              grid: {
+                display: false, // Remove grid lines from the x-axis
+              },
+              ticks: {
+                display: true, // Show bin ranges as labels on the x-axis
+              },
+            },
+            y: {
+              ticks: {
+                display: false, // Show counts as labels on the y-axis
+              },
+              beginAtZero: true, // Ensure bars start at zero on the y-axis
+              grid: {
+                display: false, // Remove grid lines from the y-axis
+              },
+            },
+          },
+        },
+      });
+    },
+    async ageAtTriage() {
+      await this.loadCSVData();
+
+      // Set up bin parameters
+      const minAge = 0; // Start from age 0
+      const maxAge = 100; // Maximum age for the histogram (you can adjust this based on your data)
+      const numBins = 5; // Number of bins (5 bins for age distribution)
+
+      // Calculate bin width based on the number of bins and age range
+      const binWidth = (maxAge - minAge) / numBins;
+
+      // Initialize bins to 0
+      const bins = Array(numBins).fill(0);
+
+      // Get the "Age" values and filter out any null or undefined values
+      const ageValues = this.triageData
+        .map((entry) => entry["Age"]) // Assuming the "Age" field in your CSV data
+        .filter((value) => value !== null && value !== undefined);
+
+      // Distribute age values into bins based on the bin width
+      ageValues.forEach((value) => {
+        const binIndex = Math.min(
+          Math.floor((value - minAge) / binWidth),
+          numBins - 1
+        ); // Ensure binIndex is within the range of bins
+        bins[binIndex]++;
+      });
+
+      // Prepare the bin range labels (e.g., "0-20", "21-40", etc.)
+      const labels = [];
+      for (let i = 0; i < numBins; i++) {
+        const lowerBound = minAge + i * binWidth;
+        const upperBound = lowerBound + binWidth - 1;
+        labels.push(`${lowerBound}-${upperBound}`);
+      }
+
+      // Create the histogram chart
+      new Chart(document.getElementById("ageDistChart"), {
+        type: "bar", // Bar chart for histogram
+        data: {
+          labels: labels, // Bin ranges for x-axis labels
+          datasets: [
+            {
+              label: "Age Distribution",
+              data: bins, // Counts of customers in each bin
+
+              backgroundColor: "#000000", // Bar color
+              borderWidth: 0.5,
+              borderRadius: 200,
             },
           ],
         },
@@ -184,12 +330,12 @@ export default {
                 display: false, // Remove grid lines from the x-axis
               },
               ticks: {
-                display: true, // Show counts as labels on the x-axis
+                display: true, // Show bin ranges as labels on the x-axis
               },
             },
             y: {
               ticks: {
-                display: false, // Show counts as labels on the x-axis
+                display: false, // Show counts as labels on the y-axis
               },
               beginAtZero: true, // Ensure bars start at zero on the y-axis
               grid: {
@@ -202,17 +348,13 @@ export default {
     },
   },
   mounted() {
-    // Call patientArrivalMeans method when the component is mounted
+    Chart.register(ChartDataLabels);
     this.patientArrivalMeans();
-    this.timeAtTriage();
+    this.genderModeChart();
+    this.ageAtTriage();
+    this.mentalStateChart()
   },
 };
 </script>
 
-<style>
-canvas {
-  width: 50vw; /* Full width of the parent container */
-  height: 50vh; /* 50% of the viewport height */
-  max-height: 500px; /* Optionally, you can set a max height */
-}
-</style>
+<style></style>
