@@ -10,6 +10,7 @@ import Patients from "./components/pages/Patients.vue";
 import NurseExpert from "./components/pages/NurseExpert.vue";
 import Nurse from "./components/pages/Nurse.vue";
 import CaseStudy from "./components/pages/CaseStudy.vue";
+import Expert from "./components/pages/Expert.vue";
 
 const routes = [
   { path: "/", component: Introduction },
@@ -19,6 +20,7 @@ const routes = [
   { path: "/patients", component: Patients },
   { path: "/nurse-expert", component: NurseExpert },
   { path: "/nurse", component: Nurse },
+  { path: "/expert", component: Expert },
 ];
 
 const router = createRouter({
