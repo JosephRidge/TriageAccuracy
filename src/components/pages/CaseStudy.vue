@@ -40,7 +40,7 @@
               >
               and reference article:<a
                 class="text-blue-800 font-bold"
-                ref="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0216972"
+                href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0216972"
                 >paper</a
               >
             </div>
@@ -58,7 +58,7 @@
             id="diseaseChart"
             height="500"
             width="800"
-            class="rounded-lg bg-green-200"
+            class="rounded-lg"
           ></canvas>
         </div>
       </div>
@@ -127,6 +127,14 @@ export default {
           scales: {
             y: {
               beginAtZero: true,
+              grid: {
+                display: false, // Remove grid lines from the x-axis
+              },
+            },
+            x: {
+              grid: {
+                display: false, // Remove grid lines from the x-axis
+              },
             },
           },
           plugins: {
