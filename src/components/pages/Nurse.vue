@@ -13,20 +13,12 @@
     </div>
 
     <!--  expert -->
-    <div class="grid grid-cols-2">
-      <div style="position: relative; height: 40vh; width: 40vw">
-        <canvas
-          id="expertDiagnosisChart"
-          class="rounded-lg bg-green-50 "
-        ></canvas>
-      </div>
-      <h1>General Expert Diagnosis</h1>
-    </div>
+    
     <RouterLink
       to="/"
       class="rounded-full bg-gray-950 hover:bg-black w-fit px-4 py-2 my-6 scale-90 hover:cursor-pointer text-white"
     >
-      Nurse vs Expert accuracy
+      What did the Experts say?   
     </RouterLink>
   </div>
 </template>
@@ -100,7 +92,6 @@ export default {
               data: data,
               backgroundColor: ["#880808", "#00000"],
               borderWidth: 1,
-              borderRadius: 200,
             },
           ],
         },
