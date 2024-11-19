@@ -5,7 +5,7 @@
    <div class="flex">
     <div class="w-1/2">
       <!-- title -->
-      <div class="capitalize font-black text-7xl py-10">
+      <div class="capitalize font-black text-6xl py-10">
         {{ introTitle }}
       </div>
       <!--  subtitle -->

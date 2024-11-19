@@ -2,44 +2,14 @@
   <div class="px-24 text-left w-full h-screen tracking-widest leading-loose">
     <div class="font-bold text-4xl py-2">Focusing on Triage Diagnosis</div>
 
-    <div class="grid grid-cols-2">
-      <!-- nurse  -->
-      <div class=" ">
-        <h1>General Nurse Diagnosis</h1>
-        <div style="position: relative; height: 40vh; width: 40vw">
-          <canvas id="nurseDiagnosisChart" class="rounded-lg"></canvas>
-        </div>
-      </div>
-      <!-- patient time at triage -->
-      <div class=" ">
-        <h1 class="pt-4">Time taken a triage</h1>
-        <div style="position: relative; height: 45vh; width: 50vw">
-          <canvas id="triageTimeDistChart" class="rounded-lg"></canvas>
-        </div>
-      </div>
-    </div>
-    <!-- patientsPerHRModeChart -->
-    <div>
-      <div class="">
-        <h1 class="pt-4">Number Of Patients per Hour</h1>
-        <div style="position: relative; height: 45vh; width: 100vw">
-          <canvas
-            id="patientsPerHRModeChart"
-            class="rounded-lg"
-            width="1000"
-          ></canvas>
-        </div>
-      </div>
-    </div>
-    <div>
-      <!-- patient seen per hour -->
-      <div></div>
-    </div>
+
+    <!-- nurse vs expert -->
+     
     <RouterLink
       to="/expert"
       class="rounded-full bg-gray-950 hover:bg-black w-fit px-4 py-2 my-6 scale-90 hover:cursor-pointer text-white"
     >
-      Triage Accuracy
+      home
     </RouterLink>
   </div>
 </template>
@@ -49,7 +19,7 @@ import Papa from "papaparse";
 import { triageDataPath } from "../../utility/constants";
 import { RouterLink } from "vue-router";
 import Chart from "chart.js/auto";
-import ChartDataLabels from "chartjs-plugin-datalabels"; // Import the datalabels plugin
+import ChartDataLabels from "chartjs-plugin-datalabels"; 
 
 export default {
   data() {
@@ -200,7 +170,7 @@ export default {
             },
             y: {
               ticks: {
-                display: true, // Show counts as labels on the x-axis
+                display: false, // Show counts as labels on the x-axis
               },
               beginAtZero: true, // Ensure bars start at zero on the y-axis
               grid: {
@@ -273,7 +243,7 @@ export default {
     async numOfPatientsPerHour() {
       await this.loadCSVData();
 
-      const binWidth = 3; // Set each bin range to 1.5
+      const binWidth = 1.5; // Set each bin range to 1.5
       const minDuration = 0; // Start from 0
       const maxDuration = 18; // End at 18
 
@@ -281,9 +251,9 @@ export default {
       const numBins = Math.ceil((maxDuration - minDuration) / binWidth);
       const bins = Array(numBins).fill(0); // Initialize bins to 0
 
-      // Get the "Patients number per hour" values and filter out any null or undefined values
+      // Get the "KTAS duration_min" values and filter out any null or undefined values
       const durationValues = this.triageData
-        .map((entry) => entry["Patients number per hour"]) // Ensure the column name matches exactly
+        .map((entry) => entry["Patients number per hour	"])
         .filter((value) => value !== null && value !== undefined);
 
       // Distribute data points into bins based on the bin width of 1.5
@@ -292,23 +262,21 @@ export default {
         bins[binIndex]++;
       });
 
-      // Generate the bin range labels (e.g., "0-1.5", "1.5-3.0", etc.)
-      const labels = [];
-      for (let i = 0; i < numBins; i++) {
-        const lowerBound = minDuration + i * binWidth;
-        const upperBound = lowerBound + binWidth;
-        labels.push(`${lowerBound.toFixed(1)}-${upperBound.toFixed(1)}`);
-      }
+      // Generate the bin range labels for the y-axis (counts of patients in each bin)
+      const counts = bins; // Counts of patients per bin
+
+      // Prepare the data for the chart
+      const labels = counts; // Set the labels as the counts instead of the ranges
 
       // Create the histogram chart
       new Chart(document.getElementById("patientsPerHRModeChart"), {
-        type: "bar", // Bar chart for histogram
+        type: "bar", // Bar chart
         data: {
-          labels: labels, // Bin ranges for x-axis labels (e.g., "0-1.5", "1.5-3.0")
+          labels: labels, // Counts as x-axis labels
           datasets: [
             {
-              label: "Patients per Hour",
-              data: bins, // Frequency of patients per bin
+              label: "Average time at Triage in minutes",
+              data: bins,
               backgroundColor: "#000000", // Bar color
               borderWidth: 0.5,
               borderRadius: 10, // Rounded corners for the bars
@@ -330,12 +298,12 @@ export default {
                 display: false, // Remove grid lines from the x-axis
               },
               ticks: {
-                display: true, // Show bin range labels on the x-axis
+                display: true, // Show counts as labels on the x-axis
               },
             },
             y: {
               ticks: {
-                display: true, // Show counts on the y-axis
+                display: false, // Show counts as labels on the x-axis
               },
               beginAtZero: true, // Ensure bars start at zero on the y-axis
               grid: {

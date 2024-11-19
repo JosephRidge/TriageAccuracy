@@ -201,7 +201,6 @@ export default {
     },
 
     async mentalStateChart() {
-      
       await this.loadCSVData();
       const arrivalCounts = {};
       this.triageData.forEach((entry) => {
@@ -265,6 +264,7 @@ export default {
         },
       });
     },
+
     async ageAtTriage() {
       await this.loadCSVData();
 
@@ -346,6 +346,8 @@ export default {
         },
       });
     },
+
+    
   },
   mounted() {
     Chart.register(ChartDataLabels);
