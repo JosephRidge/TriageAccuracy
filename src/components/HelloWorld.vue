@@ -13,4 +13,6 @@ const count = ref(0);
   <RouterView />
 </template>
 
-<style scoped></style>
+<style scoped>
+
+</style>

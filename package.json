@@ -9,6 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "chart.js": "^4.4.6",
+    "papaparse": "^5.4.1",
     "vue": "^3.5.12",
     "vue-router": "^4.4.5"
   },

@@ -17,13 +17,14 @@
     </div>
    </div>
 
-   <div class="rounded-full bg-gray-950 hover:bg-black  w-fit px-4 py-2 my-6 scale-90 hover:cursor-pointer   text-white">start here</div>
+   <RouterLink to="/patients" class="rounded-full bg-gray-950 hover:bg-black  w-fit px-4 py-2 my-6 scale-90 hover:cursor-pointer   text-white">start here</RouterLink>
   </div>
 </template>
 
 <script>
 import { nextTick } from "vue";
 import { introSubtitle, introTitle } from "../../utility/constants";
+import { RouterLink } from "vue-router";
 
 export default {
   data() {
