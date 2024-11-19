@@ -1,32 +1,34 @@
 <template>
   <div class="px-24 text-left w-full h-screen tracking-widest leading-loose">
-    <div class="font-bold text-4xl py-2">Focusing on Patients</div>
+    <div class="font-bold text-4xl py-2 ">
+      Focusing on Patients
+    </div>
 
     <!-- patient arrival  -->
-    <div>
+    <div class="grid grid-cols-2">
       <h1>Patient Arrival Means</h1>
-      <div style="position: relative; width: 50vw">
+      <div style="position: relative; height: 35vh; width: 50vw">
         <canvas id="arrivalModeChart" class="rounded-lg bg-green-200"></canvas>
       </div>
     </div>
 
     <!-- patient time at triage -->
-    <div>
-      <h1 class="pt-4">Time taken a triage</h1>
-      <div style="position: relative; width: 50vw">
+    <div class="grid grid-cols-2">
+      <div style="position: relative; height: 35vh; width: 50vw">
         <canvas
           id="triageTimeDistChart"
           class="rounded-lg bg-green-200"
         ></canvas>
       </div>
+      <h1 class="pt-4">Time taken a triage</h1>
     </div>
     <!-- navigation button -->
-    <div class="py-4">
+    <div class="py-6 mx-auto">
       <RouterLink
         to="/"
-        class="rounded-full bg-gray-950 hover:bg-black w-fit px-4 py-2 scale-90 hover:cursor-pointer text-white"
+        class="capitalize rounded-full bg-gray-950 hover:bg-black w-fit px-4 py-2 scale-90 hover:cursor-pointer text-white"
       >
-        What the Nurse vs Expert said
+        Find out What the Nurses & Experts said...
       </RouterLink>
     </div>
   </div>
