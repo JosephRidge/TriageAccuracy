@@ -17,7 +17,7 @@
     </div>
    </div>
 
-   <RouterLink to="/patients" class="rounded-full bg-gray-950 hover:bg-black  w-fit px-4 py-2 my-6 scale-90 hover:cursor-pointer   text-white">start here</RouterLink>
+   <RouterLink to="/home" class="rounded-full bg-gray-950 hover:bg-black  w-fit px-4 py-2 my-6 scale-90 hover:cursor-pointer   text-white">start here</RouterLink>
   </div>
 </template>
 
