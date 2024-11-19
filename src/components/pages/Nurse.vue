@@ -1,6 +1,6 @@
 <template>
   <div class="px-24 text-left w-full h-screen tracking-widest leading-loose">
-    <div class="font-bold text-4xl py-2">Focusing on Triage Diagnosis</div>
+    <div class="font-bold text-4xl py-2">Triage Diagnosis by Nurse</div>
 
     <div class="grid grid-cols-2">
       <!-- nurse  -->
