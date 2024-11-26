@@ -1,12 +1,11 @@
 <template>
-  <div
-    class="text-left w-screen h-screen tracking-widest bg-gray-100 leading-loose"
-  >
-    <div class="font-bold text-4xl py-4 px-24">
+  <div class="text-left w-screen h-screen bg-gray-50 leading-loose">
+    <div class="font-bold text-4xl py-6 px-24">
       Korean Triage and Acuity Scale KPIs
     </div>
-
-    <div class="px-24 py-5 w-screen h-fit flex justify-evenly">
+ 
+      <!-- tables -->
+        <div class="px-24 py-5 w-screen h-fit flex justify-evenly">
       <!-- confusion matrix -->
       <div class="bg-white p-auto shadow-lg rounded-md">
         <table class="rounded-md m-4">
@@ -46,15 +45,17 @@
       <!-- arrow -->
       <!-- <div class=" flex justify-end rotate-180 "> <img src="../../assets/illustrations/arrow.svg" class="w-24" alt="" srcset=""></div> -->
     </div>
-
-    <div class="flex gap-1 scale-95">
+      
+    <div class="flex gap-4 py-4 justify-center">
       <!-- accuracy -->
       <div
-        class="grid bg-white border-2 border-blue-200 hover:border-blue-400 shadow-lg p-8 rounded-xl w-3/12"
+        class="grid bg-white border-2   hover:border-blue-400 shadow-lg p-8 rounded-xl w-3/12"
       >
-        <div class="font-bold text-3xl text-center">Accuracy</div>
+        <div class="font-bold text-3xl text-[#1446A0] text-center">
+          Accuracy
+        </div>
         <div class="text-5xl m-3 text-center text-gray-500 font-light">
-          91.9 <span class="text-5xl text-gray-200">%</span>
+          91.9 <span class="text-4xl text-[#1446A0]">%</span>
         </div>
         <hr />
         <div class="text-center">
@@ -64,52 +65,61 @@
       </div>
       <!-- Precision -->
       <div
-        class="grid bg-white shadow-lg border-2 border-blue-200 hover:border-blue-400 p-8 rounded-xl w-3/12"
+        class="grid bg-white shadow-lg border-2   hover:border-blue-400 p-8 rounded-xl w-3/12"
       >
-        <div class="font-bold text-3xl text-center">Precision</div>
+        <div class="font-bold text-3xl text-[#1446A0] text-center">
+          Precision
+        </div>
         <div class="text-5xl m-3 text-center text-gray-500 font-light">
-          96.5 <span class="text-5xl text-gray-200">%</span>
+          96.5 <span class="text-4xl text-[#1446A0]">%</span>
         </div>
         <hr />
         <div class="text-center">
-          When nurses say a case is an emergency, they are correct 96.5% of the
+          When nurses say a case is an emergency, they were correct 96.5% of the
           time
         </div>
       </div>
+    </div>
+
+    <div class="flex gap-4 justify-center">
       <!-- Sensitivity -->
       <div
-        class="grid bg-white shadow-lg border-2 border-blue-200 hover:border-blue-400 p-8 rounded-xl w-3/12"
+        class="grid bg-white shadow-lg border-2  hover:border-blue-400 p-8 rounded-xl w-3/12"
       >
-        <div class="font-bold text-3xl text-center">Sensitivity</div>
+        <div class="font-bold text-3xl text-[#1446A0] text-center">
+          Sensitivity
+        </div>
         <div class="text-5xl m-3 text-center text-gray-500 font-light">
-          89.4 <span class="text-5xl text-gray-200">%</span>
+          89.4 <span class="text-4xl text-[#1446A0]">%</span>
         </div>
         <hr />
         <div class="text-center">
-          Nurses correctly identify 89.4% of all emergencies, but 10.6% of
-          emergencies are missed
+          Nurses correctly identified 89.4% of all emergencies, but 10.6% of the
+          emergencies were missed
         </div>
       </div>
       <!-- specificity -->
       <div
-        class="grid bg-white shadow-lg border-2 border-blue-200 hover:border-blue-400 p-8 rounded-xl w-3/12"
+        class="grid bg-white shadow-lg border-2  hover:border-blue-400 p-8 rounded-xl w-3/12"
       >
-        <div class="font-bold text-3xl text-center">Specificity</div>
+        <div class="font-bold text-3xl text-[#1446A0] text-center">
+          Specificity
+        </div>
         <div class="text-5xl m-3 text-center text-gray-500 font-light">
-          95.5 <span class="text-5xl text-gray-200">%</span>
+          95.5 <span class="text-4xl text-[#1446A0]">%</span>
         </div>
         <hr />
         <div class="text-center">
-          Nurses correctly identify 95.5% of all non-emergencies, with only a
+          Nurses correctly identified 95.5% of all non-emergencies, with only a
           small error rate
         </div>
       </div>
     </div>
 
-    <div class="flex justify-center">
+    <div class="flex justify-end mx-8">
       <RouterLink
         to="/causesOfmistriage"
-        class="rounded-full bg-gray-950 hover:bg-black w-fit px-4 py-2 my-6 hover:cursor-pointer text-white"
+        class="capitalize rounded-full bg-[#1446A0] hover:bg-black w-fit px-4 py-2 hover:cursor-pointer text-white"
       >
         But what are the Causes of Mistriage ?
       </RouterLink>

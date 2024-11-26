@@ -19,10 +19,10 @@
       </div>
     </div>
     <!-- patientsPerHRModeChart -->
-    <div>
+    <div class="">
       <div class="">
-        <h1 class="pt-4">Number Of Patients per Hour</h1>
-        <div style="position: relative; height: 35vh; width: 80vw">
+        <h1 class="pt-4 text-center">Number Of Patients per Hour</h1>
+        <div style="height: 35vh; width: 80vw" class="flex justify-center">
           <canvas id="patientsPerHRModeChart" class="rounded-lg"></canvas>
         </div>
       </div>
@@ -181,6 +181,18 @@ export default {
         options: {
           indexAxis: "x", // Set this to 'y' to make the bars horizontal
           responsive: true,
+          plugins: {
+            datalabels: {
+              color: "#fff", // Label text color
+              font: {
+                weight: "bold",
+              },
+              align: "center",
+            },
+            legend: {
+              position: "top", // Position the legend
+            },
+          },
           scales: {
             x: {
               beginAtZero: true, // Ensure bars start at zero on the x-axis
@@ -314,6 +326,18 @@ export default {
         options: {
           indexAxis: "x", // Set this to 'y' to make the bars horizontal
           responsive: true,
+          plugins: {
+            datalabels: {
+              color: "#fff", // Label text color
+              font: {
+                weight: "bold",
+              },
+              align: "center",
+            },
+            legend: {
+              position: "top", // Position the legend
+            },
+          },
           scales: {
             x: {
               beginAtZero: true, // Ensure bars start at zero on the x-axis

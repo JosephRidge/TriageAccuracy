@@ -16,8 +16,9 @@
       <img src="../../assets/images/ambulance.jpg" alt="" srcset="" class="rounded-full hover:grayscale">
     </div>
    </div>
+   <div class="flex justify-start">   <RouterLink to="/home" class="rounded-full bg-[#1446A0] hover:bg-black  w-fit px-8 py-2 my-6   hover:cursor-pointer   text-white">start here</RouterLink>
+   </div>
 
-   <RouterLink to="/home" class="rounded-full bg-gray-950 hover:bg-black  w-fit px-4 py-2 my-6 scale-90 hover:cursor-pointer   text-white">start here</RouterLink>
   </div>
 </template>
 

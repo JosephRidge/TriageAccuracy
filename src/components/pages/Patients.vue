@@ -1,46 +1,46 @@
 <template>
-  <div class="text-left w-screen h-screen">
-    <div class="font-bold text-4xl py-4 px-24 ">Focusing on Patients</div>
+  <div class="text-left w-screen h-screen px-24">
+    <div class="font-bold text-4xl py-4">Focusing on Patients</div>
 
-    <div class="grid grid-cols-2 px-24 ">
+    <div class="grid grid-cols-2">
       <!-- patient arrival  -->
       <div class="mx-4">
         <h1>Patient Arrival Means</h1>
-        <div style="position: relative; height: 40vh; width: 50vw">
+        <div style="height: 40vh; width: 50vw">
           <canvas id="arrivalModeChart" class="rounded-lg"></canvas>
         </div>
       </div>
       <!-- patient gender -->
       <div class="mx-4">
-        <h1>Patient Gender</h1>
-        <div style="position: relative; height: 40vh; width: 50vw">
+        <h1 class="px-4">Patient Gender</h1>
+        <div style="height: 40vh; width: 50vw" class="flex justify-center">
           <canvas id="genderModeChart" class="rounded-lg"></canvas>
         </div>
       </div>
     </div>
 
-    <div class="grid grid-cols-2 px-24 ">
+    <div class="grid grid-cols-2 py-2">
       <!-- patient age -->
-      <div class=" ">
+      <div class="mx-4">
         <h1>Patient Age</h1>
-        <div style="position: relative; height: 35vh; width: 50vw">
+        <div style="height: 35vh; width: 50vw">
           <canvas id="ageDistChart" class="rounded-lg"></canvas>
         </div>
       </div>
       <!-- mental state -->
       <div class=" ">
         <h1>Patient Mental State on Arrival</h1>
-        <div style="position: relative; height: 35vh; width: 40vw">
+        <div style="height: 35vh; width: 40vw">
           <canvas id="mentalStateChart" class="rounded-lg"></canvas>
         </div>
       </div>
     </div>
 
-    <!-- navigation button -->  
-    <div class=" px-4 py-1 flex justify-end ">
+    <!-- navigation button -->
+    <div class="py-1 flex justify-end">
       <RouterLink
         to="/nurse"
-        class="capitalize rounded-full bg-[#1446A0] hover:bg-black w-fit px-4 py-2   hover:cursor-pointer text-white"
+        class="capitalize rounded-full bg-[#1446A0] hover:bg-black w-fit px-4 py-2 hover:cursor-pointer text-white"
       >
         Find out the Nurses diagnosis...
       </RouterLink>
@@ -117,8 +117,17 @@ export default {
           ],
         },
         options: {
-          layout: {
-            padding: 20,
+          plugins: {
+            datalabels: {
+              color: "#fff", // Label text color
+              font: {
+                weight: "bold",
+              },
+              align: "center",
+            },
+            legend: {
+              position: "top", // Position the legend
+            },
           },
           indexAxis: "y", // Set this to 'y' to make the bars horizontal
           responsive: true,
@@ -234,13 +243,24 @@ export default {
               // borderWidth: 0.5,
               // borderRadius: 10, // Rounded corners for the bars
               categoryPercentage: 0.9, // Control the width of each bar (reduce category percentage to reduce space between bars)
-              barPercentage: 1, // Ensure bars fit within each category without gaps
-        
+              barPercentage: 0.8, // Ensure bars fit within each category without gaps
             },
           ],
         },
         options: {
           responsive: true,
+          plugins: {
+            datalabels: {
+              color: "", // Label text color
+              font: {
+                weight: "bold",
+              },
+              align: "center",
+            },
+            legend: {
+              position: "top", // Position the legend
+            },
+          },
           scales: {
             x: {
               beginAtZero: true, // Ensure bars start at zero on the x-axis
@@ -253,7 +273,7 @@ export default {
             },
             y: {
               ticks: {
-                display: false, // Show counts as labels on the y-axis
+                display: true, // Show counts as labels on the y-axis
               },
               beginAtZero: true, // Ensure bars start at zero on the y-axis
               grid: {
@@ -311,15 +331,24 @@ export default {
               label: "Age Distribution",
               data: bins, // Counts of customers in each bin
 
-              backgroundColor: "#000000", // Bar color
+              backgroundColor: "#1446A0", // Bar color
               borderWidth: 0.5,
               // borderRadius: 200,
             },
           ],
         },
         options: {
-          layout: {
-            padding: 20,
+          plugins: {
+            datalabels: {
+              color: "#fff", // Label text color
+              font: {
+                weight: "bold",
+              },
+              align: "center",
+            },
+            legend: {
+              position: "top", // Position the legend
+            },
           },
           indexAxis: "x", // Set this to 'y' to make the bars horizontal
           responsive: true,
@@ -335,7 +364,7 @@ export default {
             },
             y: {
               ticks: {
-                display: false, // Show counts as labels on the y-axis
+                display: true, // Show counts as labels on the y-axis
               },
               beginAtZero: true, // Ensure bars start at zero on the y-axis
               grid: {
@@ -346,15 +375,13 @@ export default {
         },
       });
     },
-
-    
   },
   mounted() {
     Chart.register(ChartDataLabels);
     this.patientArrivalMeans();
     this.genderModeChart();
     this.ageAtTriage();
-    this.mentalStateChart()
+    this.mentalStateChart();
   },
 };
 </script>
