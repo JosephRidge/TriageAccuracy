@@ -79,7 +79,6 @@ export default {
       }
     },
 
-    // Function to process and plot arrival means
     async nurseDiagnosisChart() {
       await this.loadCSVData();
 
@@ -140,30 +139,29 @@ export default {
     async timeAtTriage() {
       await this.loadCSVData();
 
-      const binWidth = 1.5; // Set each bin range to 1.5
-      const minDuration = 0; // Start from 0
-      const maxDuration = 18; // End at 18
-
-      // Create bins for each range (0-1.5, 1.5-3.0, etc.)
+      const binWidth = 1.5;
+      const minDuration = 0;
+      const maxDuration = 18;
       const numBins = Math.ceil((maxDuration - minDuration) / binWidth);
-      const bins = Array(numBins).fill(0); // Initialize bins to 0
+      const bins = Array(numBins).fill(0);
 
-      // Get the "KTAS duration_min" values and filter out any null or undefined values
       const durationValues = this.triageData
         .map((entry) => entry["KTAS duration_min"])
         .filter((value) => value !== null && value !== undefined);
 
-      // Distribute data points into bins based on the bin width of 1.5
       durationValues.forEach((value) => {
         const binIndex = Math.min(Math.floor(value / binWidth), numBins - 1); // Ensure binIndex is within the range of bins
         bins[binIndex]++;
       });
 
-      // Generate the bin range labels for the y-axis (counts of patients in each bin)
-      const counts = bins; // Counts of patients per bin
-
-      // Prepare the data for the chart
-      const labels = counts; // Set the labels as the counts instead of the ranges
+      const counts = bins;
+      const labels = [];
+      for (let i = 0; i < numBins; i++) {
+        const lowerBound = minDuration + i * binWidth;
+        const upperBound = lowerBound + binWidth;
+        const formattedLowerBound = i === 0 ? "0" : lowerBound.toFixed(1); // Check if it's the first bin
+        labels.push(`${formattedLowerBound}-${upperBound.toFixed(1)}`);
+      }
 
       // Create the histogram chart
       new Chart(document.getElementById("triageTimeDistChart"), {
@@ -297,7 +295,8 @@ export default {
       for (let i = 0; i < numBins; i++) {
         const lowerBound = minDuration + i * binWidth;
         const upperBound = lowerBound + binWidth;
-        labels.push(`${lowerBound.toFixed(1)}-${upperBound.toFixed(1)}`);
+        const formattedLowerBound = i === 0 ? "0" : lowerBound.toFixed(1); // Check if it's the first bin
+        labels.push(`${formattedLowerBound}-${upperBound.toFixed(1)}`);
       }
 
       // Create the histogram chart
