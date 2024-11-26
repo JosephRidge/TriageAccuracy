@@ -12,6 +12,8 @@ import Nurse from "./components/pages/Nurse.vue";
 import CaseStudy from "./components/pages/CaseStudy.vue";
 import Expert from "./components/pages/Expert.vue";
 import CausesOfMistriage from "./components/pages/CausesOfMistriage.vue";
+import About from "./components/pages/About.vue";
+import ProblemStatement from "./components/pages/ProblemStatement.vue";
 
 const routes = [
   { path: "/", component: Introduction },
@@ -23,6 +25,8 @@ const routes = [
   { path: "/nurse", component: Nurse },
   { path: "/expert", component: Expert },
   { path: "/causesOfmistriage", component: CausesOfMistriage },
+  { path: "/dataSetOverview", component: About },
+  { path: "/problemStatement", component: ProblemStatement },
 ];
 
 const router = createRouter({

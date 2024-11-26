@@ -1,5 +1,5 @@
 <template>
-  <div class="px-24 text-left w-full h-screen tracking-widest leading-loose">
+  <div class="text-left w-screen h-screen tracking-widest leading-loose px-36">
     <div class="font-bold text-4xl py-2">Triage Diagnosis by Nurse</div>
 
     <div class="grid grid-cols-2">
@@ -13,7 +13,7 @@
       <!-- patient time at triage -->
       <div class=" ">
         <h1 class="pt-4">Time taken a triage</h1>
-        <div style="position: relative; height: 45vh; width: 50vw">
+        <div style="position: relative; height: 35vh; width: 50vw">
           <canvas id="triageTimeDistChart" class="rounded-lg"></canvas>
         </div>
       </div>
@@ -22,12 +22,8 @@
     <div>
       <div class="">
         <h1 class="pt-4">Number Of Patients per Hour</h1>
-        <div style="position: relative; height: 45vh; width: 100vw">
-          <canvas
-            id="patientsPerHRModeChart"
-            class="rounded-lg"
-            width="1000"
-          ></canvas>
+        <div style="position: relative; height: 35vh; width: 80vw">
+          <canvas id="patientsPerHRModeChart" class="rounded-lg"></canvas>
         </div>
       </div>
     </div>
@@ -35,12 +31,14 @@
       <!-- patient seen per hour -->
       <div></div>
     </div>
-    <RouterLink
-      to="/expert"
-      class="rounded-full bg-gray-950 hover:bg-black w-fit px-4 py-2 my-6 scale-90 hover:cursor-pointer text-white"
-    >
-      Triage Accuracy
-    </RouterLink>
+    <div class="px-4 py-1 flex justify-end">
+      <RouterLink
+        to="/expert"
+        class="capitalize rounded-full bg-[#1446A0] hover:bg-black w-fit px-4 py-2 hover:cursor-pointer text-white"
+      >
+        Triage Accuracy
+      </RouterLink>
+    </div>
   </div>
 </template>
 
@@ -110,7 +108,7 @@ export default {
             {
               label: "Nurse Diagnosis Chart",
               data: data,
-              backgroundColor: ["#880808", "#00000"],
+              backgroundColor: ["#880808", "#1446A0"],
               borderWidth: 1,
             },
           ],
@@ -172,18 +170,15 @@ export default {
             {
               label: "Average time at Triage in minutes",
               data: bins,
-              backgroundColor: "#000000", // Bar color
+              backgroundColor: "#1446A0", // Bar color
               borderWidth: 0.5,
-              borderRadius: 10, // Rounded corners for the bars
+              // borderRadius: 10, // Rounded corners for the bars
               categoryPercentage: 0.9, // Control the width of each bar (reduce category percentage to reduce space between bars)
               barPercentage: 1, // Ensure bars fit within each category without gaps
             },
           ],
         },
         options: {
-          layout: {
-            padding: 20,
-          },
           indexAxis: "x", // Set this to 'y' to make the bars horizontal
           responsive: true,
           scales: {
@@ -239,7 +234,7 @@ export default {
             {
               label: "Expert Diagnosis Chart",
               data: data,
-              backgroundColor: ["#880808", "#00000"],
+              backgroundColor: ["#880808", "#1446A0"],
               borderWidth: 1,
             },
           ],
@@ -308,18 +303,15 @@ export default {
             {
               label: "Patients per Hour",
               data: bins, // Frequency of patients per bin
-              backgroundColor: "#000000", // Bar color
+              backgroundColor: "#1446A0", // Bar color
               borderWidth: 0.5,
-              borderRadius: 10, // Rounded corners for the bars
+              // borderRadius: 10, // Rounded corners for the bars
               categoryPercentage: 0.9, // Control the width of each bar (reduce category percentage to reduce space between bars)
               barPercentage: 1, // Ensure bars fit within each category without gaps
             },
           ],
         },
         options: {
-          layout: {
-            padding: 20,
-          },
           indexAxis: "x", // Set this to 'y' to make the bars horizontal
           responsive: true,
           scales: {

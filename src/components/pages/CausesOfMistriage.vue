@@ -1,96 +1,109 @@
 <template>
   <div>
-    <canvas id="barChart"></canvas>
-    <canvas id="scatterChart"></canvas>
+    <div class="font-bold text-4xl py-4 px-24">Causes Of Mistriage</div>
+    <div style="position: relative; height: 60vh; width: 70vw">
+      <canvas id="barChart" class="rounded-lg"></canvas>
+    </div>
+     <!-- navigation button -->
+     <div class="py-6 mx-auto flex justify-center">
+      <RouterLink
+        to="/nurse"
+        class="capitalize rounded-full bg-gray-950 hover:bg-black w-fit px-4 py-2 scale-90 hover:cursor-pointer text-white"
+      >
+       Find more about the data we used...
+      </RouterLink>
+    </div>
   </div>
 </template>
 
 <script>
-import { defineComponent } from 'vue';
-import Chart from 'chart.js/auto';
+import { defineComponent } from "vue";
+import Chart from "chart.js/auto";
+import ChartDataLabels from "chartjs-plugin-datalabels" 
 
 export default defineComponent({
-  name: 'VitalSignsVisualization',
+  name: "VitalSignsVisualization",
   mounted() {
+    Chart.register(ChartDataLabels);
     this.createBarChart();
-    this.createScatterPlot();
   },
   methods: {
-    // Bar Chart: Average Vital Signs per Status Category
     createBarChart() {
-      const ctxBar = document.getElementById('barChart').getContext('2d');
-      new Chart(ctxBar, {
-        type: 'bar',
-        data: {
-          labels: ['Systolic BP', 'Diastolic BP', 'Heart Rate'],
-          datasets: [
-            {
-              label: 'Overtriage',
-              data: [130, 85, 100],
-              backgroundColor: 'rgba(255, 99, 132, 1)',
-            },
-            {
-              label: 'Correct',
-              data: [120, 80, 85],
-              backgroundColor: 'rgba(54, 162, 235, 1)',
-            },
-            {
-              label: 'Undertriage',
-              data: [110, 75, 70],
-              backgroundColor: 'rgba(75, 192, 192, 1)',
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          scales: {
-            y: {
-              beginAtZero: true,
-            },
-          },
-        },
-      });
-    },
+      const canvas = document.getElementById("barChart");
+      const ctxBar = canvas.getContext("2d");
 
-    // Scatter Plot: Vital Signs vs. Mistriage Status
-    createScatterPlot() {
-      const ctxScatter = document.getElementById('scatterChart').getContext('2d');
-      new Chart(ctxScatter, {
-        type: 'scatter',
+      // Original labels and dataset values
+      const labels = [
+        "Applying pain scale",
+        "Applying physical symptom chief complaint",
+        "Applying psychological assessment",
+        "Applying vital signs",
+        "Considering mental state",
+        "Considering symptom onset",
+        "Considering transfer notes",
+        "Considering underlying disease",
+        "Other",
+      ];
+
+      const overTriageData = [24, 16, 0, 7, 4, 1, 1, 2, 0];
+      const underTriageData = [40, 31, 6, 15, 9, 8, 8, 7, 7];
+
+      // Combine labels and data for sorting
+      const combinedData = labels.map((label, index) => ({
+        label,
+        overTriage: overTriageData[index],
+        underTriage: underTriageData[index],
+        total: overTriageData[index] + underTriageData[index], // Use total as sorting metric
+      }));
+
+      // Sort the data by total value (ascending order)
+      combinedData.sort((a, b) => b.total - a.total);
+
+      // Separate sorted data back into labels and datasets
+      const sortedLabels = combinedData.map((item) => item.label);
+      const sortedOverTriage = combinedData.map((item) => item.overTriage);
+      const sortedUnderTriage = combinedData.map((item) => item.underTriage);
+
+      new Chart(ctxBar, {
+        type: "bar",
         data: {
+          labels: sortedLabels, // Use sorted labels
           datasets: [
             {
-              label: 'Overtriage',
-              data: [{ x: 130, y: 100 }, { x: 125, y: 110 }],
-              backgroundColor: 'rgba(255, 99, 132, 1)',
+              label: "Over Triage",
+              data: sortedOverTriage,  
+              backgroundColor: "#add8e6",
+              borderWidth: 0.5, 
             },
             {
-              label: 'Correct',
-              data: [{ x: 120, y: 85 }, { x: 118, y: 90 }],
-              backgroundColor: 'rgba(54, 162, 235, 1)',
+              label: "Under Triage",
+              data: sortedUnderTriage,  
+              backgroundColor: "#C70039",
+              borderWidth: 0.5, 
             },
-            {
-              label: 'Undertriage',
-              data: [{ x: 110, y: 70 }, { x: 112, y: 72 }],
-              backgroundColor: 'rgba(75, 192, 192, 1)',
-            }
-          ]
+          ],
         },
         options: {
+          indexAxis: "y", // Horizontal bars
           responsive: true,
           scales: {
             x: {
-              type: 'linear',
-              position: 'bottom',
+              stacked: true,
+              grid: {
+                display: false, // Remove grid lines from the x-axis
+              },
             },
             y: {
-              type: 'linear',
+              stacked: true,
+              grid: {
+                display: false, // Remove grid lines from the y-axis
+              },
             },
           },
         },
       });
     },
-  }
+  },
 });
 </script>
 

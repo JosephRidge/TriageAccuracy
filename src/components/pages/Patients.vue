@@ -1,8 +1,8 @@
 <template>
-  <div class="px-24 text-left w-screen h-screen">
-    <div class="font-bold text-4xl py-4">Focusing on Patients</div>
+  <div class="text-left w-screen h-screen">
+    <div class="font-bold text-4xl py-4 px-24 ">Focusing on Patients</div>
 
-    <div class="grid grid-cols-2">
+    <div class="grid grid-cols-2 px-24 ">
       <!-- patient arrival  -->
       <div class="mx-4">
         <h1>Patient Arrival Means</h1>
@@ -19,7 +19,7 @@
       </div>
     </div>
 
-    <div class="grid grid-cols-2">
+    <div class="grid grid-cols-2 px-24 ">
       <!-- patient age -->
       <div class=" ">
         <h1>Patient Age</h1>
@@ -30,17 +30,17 @@
       <!-- mental state -->
       <div class=" ">
         <h1>Patient Mental State on Arrival</h1>
-        <div style="position: relative; height: 35vh; width: 50vw">
+        <div style="position: relative; height: 35vh; width: 40vw">
           <canvas id="mentalStateChart" class="rounded-lg"></canvas>
         </div>
       </div>
     </div>
 
-    <!-- navigation button -->
-    <div class="py-6 mx-auto">
+    <!-- navigation button -->  
+    <div class=" px-4 py-1 flex justify-end ">
       <RouterLink
         to="/nurse"
-        class="capitalize rounded-full bg-gray-950 hover:bg-black w-fit px-4 py-2 scale-90 hover:cursor-pointer text-white"
+        class="capitalize rounded-full bg-[#1446A0] hover:bg-black w-fit px-4 py-2   hover:cursor-pointer text-white"
       >
         Find out the Nurses diagnosis...
       </RouterLink>
@@ -110,9 +110,9 @@ export default {
             {
               label: "Number of Patients",
               data: data,
-              backgroundColor: "#000000", // Bar color
+              backgroundColor: "#1446A0", // Bar color
               borderWidth: 0.5,
-              borderRadius: 200,
+              // borderRadius: 200,
             },
           ],
         },
@@ -173,7 +173,7 @@ export default {
             {
               label: "Nurse Diagnosis Chart",
               data: data,
-              backgroundColor: ["#880808", "#00000"],
+              backgroundColor: ["#1446A0", "#00000"],
               borderWidth: 1,
             },
           ],
@@ -230,9 +230,9 @@ export default {
             {
               label: "Patient Mental State",
               data: data,
-              backgroundColor: "#000000", // Bar color
-              borderWidth: 0.5,
-              borderRadius: 10, // Rounded corners for the bars
+              backgroundColor: "#1446A0", // Bar color
+              // borderWidth: 0.5,
+              // borderRadius: 10, // Rounded corners for the bars
               categoryPercentage: 0.9, // Control the width of each bar (reduce category percentage to reduce space between bars)
               barPercentage: 1, // Ensure bars fit within each category without gaps
         
@@ -313,7 +313,7 @@ export default {
 
               backgroundColor: "#000000", // Bar color
               borderWidth: 0.5,
-              borderRadius: 200,
+              // borderRadius: 200,
             },
           ],
         },
