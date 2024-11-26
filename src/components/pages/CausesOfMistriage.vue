@@ -4,13 +4,13 @@
     <div style="position: relative; height: 60vh; width: 70vw">
       <canvas id="barChart" class="rounded-lg"></canvas>
     </div>
-     <!-- navigation button -->
-     <div class="py-6 mx-auto flex justify-center">
+    <!-- navigation button -->
+    <div class="py-6 mx-10 flex justify-end ">
       <RouterLink
-        to="/nurse"
-        class="capitalize rounded-full bg-gray-950 hover:bg-black w-fit px-4 py-2 scale-90 hover:cursor-pointer text-white"
+        to="/conclusion"
+        class="capitalize rounded-full bg-[#1446A0] hover:bg-black w-fit px-4 py-2  hover:cursor-pointer text-white"
       >
-       Find more about the data we used...
+       Conclusion
       </RouterLink>
     </div>
   </div>
@@ -19,7 +19,7 @@
 <script>
 import { defineComponent } from "vue";
 import Chart from "chart.js/auto";
-import ChartDataLabels from "chartjs-plugin-datalabels" 
+import ChartDataLabels from "chartjs-plugin-datalabels";
 
 export default defineComponent({
   name: "VitalSignsVisualization",
@@ -71,21 +71,33 @@ export default defineComponent({
           datasets: [
             {
               label: "Over Triage",
-              data: sortedOverTriage,  
-              backgroundColor: "#add8e6",
-              borderWidth: 0.5, 
+              data: sortedOverTriage,
+              backgroundColor: "#1446A0",
+              borderWidth: 0.5,
             },
             {
               label: "Under Triage",
-              data: sortedUnderTriage,  
+              data: sortedUnderTriage,
               backgroundColor: "#C70039",
-              borderWidth: 0.5, 
+              borderWidth: 0.5,
             },
           ],
         },
         options: {
           indexAxis: "y", // Horizontal bars
           responsive: true,
+          plugins: {
+            datalabels: {
+              color: "#fff", // Label text color
+              font: {
+                weight: "bold",
+              },
+              align: "center",
+            },
+            legend: {
+              position: "top", // Position the legend
+            },
+          },
           scales: {
             x: {
               stacked: true,
