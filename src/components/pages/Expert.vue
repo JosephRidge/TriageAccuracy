@@ -1,15 +1,51 @@
 <template>
-  <div class="px-24 text-left w-full h-screen tracking-widest leading-loose">
-    <div class="font-bold text-4xl py-2">Focusing on Triage Diagnosis</div>
+  <div class=" px-24 text-left w-screen h-screen tracking-widest leading-loose">
+    <div class="font-bold text-4xl py-2">
+      Focusing on Triage Diagnosis: Nurse-Expert Accuracy
+    </div>
+ 
 
+    <div class=" py-10 w-screen h-fit ">
+      <table class=" ">
+        <thead>
+          <tr class="bg-gray-200 w-screen">
+            <th></th>
+            <!-- Empty cell for top-left corner -->
+            <th class="bg-black text-white px-4">Nurse Remarks</th>
+            <th></th>
+          </tr>
+          <tr>
+            <th class="bg-black text-white px-4">Expert Remarks</th>
+            <th class="font-normal bg-gray-200 px-3">Emergency</th>
+            <th class="font-normal px-3 bg-gray-200">Non-Emergency</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="row-header px-3 bg-gray-200">Emergency</td>
+            <td class="px-3">{{ expertNurseEmergencyAlignment }}</td>
+            <td class="px-3 bg-red-500 font-bold">
+              {{ expertNurseEmergencyNonEmergencyAlignment }}
+            </td>
+          </tr>
+          <tr>
+            <td class="row-header px-3 bg-gray-200">Non-Emergency</td>
+            <td class="px-3 bg-red-500 font-bold">
+              {{ expertNurseNonEmergencyEmergencyAlignment }}
+            </td>
+            <td class="px-3">
+              {{ expertNurseNonEmergencyNoEmergencyAlignment }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-    <!-- nurse vs expert -->
-     
     <RouterLink
-      to="/expert"
+      to="/causesOfmistriage"
       class="rounded-full bg-gray-950 hover:bg-black w-fit px-4 py-2 my-6 scale-90 hover:cursor-pointer text-white"
     >
-      home
+      Causes of Mistriage
     </RouterLink>
   </div>
 </template>
@@ -19,13 +55,18 @@ import Papa from "papaparse";
 import { triageDataPath } from "../../utility/constants";
 import { RouterLink } from "vue-router";
 import Chart from "chart.js/auto";
-import ChartDataLabels from "chartjs-plugin-datalabels"; 
+import ChartDataLabels from "chartjs-plugin-datalabels";
+import { TreemapController, TreemapElement } from "chartjs-chart-treemap";
 
 export default {
   data() {
     return {
       count: 0,
       triageData: [], // Store the data here
+      expertNurseEmergencyAlignment: 0,
+      expertNurseEmergencyNonEmergencyAlignment: 0,
+      expertNurseNonEmergencyEmergencyAlignment: 0,
+      expertNurseNonEmergencyNoEmergencyAlignment: 0,
     };
   },
   props: ["title", "chartTarget"],
@@ -49,279 +90,122 @@ export default {
       }
     },
 
-    // Function to process and plot arrival means
-    async nurseDiagnosisChart() {
-      await this.loadCSVData();
+    async prepareTreeMapData() {
+      await this.loadCSVData(); // Load the data if needed
 
-      const arrivalCounts = {};
+      const counts = {
+        "Emergency (Nurse)": 0,
+        "Non-Emergency (Nurse)": 0,
+        "Emergency (Expert)": 0,
+        "Non-Emergency (Expert)": 0,
+      };
+
       this.triageData.forEach((entry) => {
-        const mode = entry["KTAS_Nurse"];
-        if (mode) {
-          arrivalCounts[mode] = (arrivalCounts[mode] || 0) + 1;
+        const nurseCategory = entry["KTAS_Nurse"];
+        const expertCategory = entry["KTAS_expert"];
+
+        if (nurseCategory === "Emergency") counts["Emergency (Nurse)"]++;
+        else if (nurseCategory === "Non-Emergency")
+          counts["Non-Emergency (Nurse)"]++;
+
+        if (expertCategory === "Emergency") counts["Emergency (Expert)"]++;
+        else if (expertCategory === "Non-Emergency")
+          counts["Non-Emergency (Expert)"]++;
+      });
+
+      // Convert counts to Treemap data format
+      return Object.keys(counts).map((type) => ({
+        label: type,
+        value: counts[type],
+        color: type.includes("Emergency") ? "red" : "black",
+      }));
+    },
+    async matrix() {
+      const ctx = document.getElementById("myChart").getContext("2d");
+      const data = await this.prepareTreeMapData();
+      console.log(data);
+
+      new Chart(ctx, {
+        type: "treemap",
+        data: {
+          datasets: [
+            {
+              tree: data,
+              key: "value",
+              groups: ["label"],
+              backgroundColor: (ctx) => {
+                const type = ctx.raw ? ctx.raw.label : "";
+                return type.includes("Emergency") ? "red" : "black";
+              },
+              borderWidth: 1,
+              borderColor: "white",
+            },
+          ],
+        },
+        options: {
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: (ctx) => {
+                  const { raw } = ctx;
+                  return `${raw.label}: ${raw.value}`;
+                },
+              },
+            },
+          },
+        },
+      });
+    },
+
+    async prepareComparisonMatrix() {
+      await this.loadCSVData(); // Load the data first
+
+      // Initialize the matrix with all combinations
+      const matrix = {
+        "Expert: Emergency | Nurse: Emergency": 0,
+        "Expert: Emergency | Nurse: Non-Emergency": 0,
+        "Expert: Non-Emergency | Nurse: Emergency": 0,
+        "Expert: Non-Emergency | Nurse: Non-Emergency": 0,
+      };
+
+      this.triageData.forEach((entry) => {
+        const expertRemark = entry["KTAS_expert"];
+        const nurseRemark = entry["KTAS_Nurse"];
+
+        if (expertRemark === "Emergency" && nurseRemark === "Emergency") {
+          matrix["Expert: Emergency | Nurse: Emergency"]++;
+        } else if (
+          expertRemark === "Emergency" &&
+          nurseRemark === "Non-Emergency"
+        ) {
+          matrix["Expert: Emergency | Nurse: Non-Emergency"]++;
+        } else if (
+          expertRemark === "Non-Emergency" &&
+          nurseRemark === "Emergency"
+        ) {
+          matrix["Expert: Non-Emergency | Nurse: Emergency"]++;
+        } else if (
+          expertRemark === "Non-Emergency" &&
+          nurseRemark === "Non-Emergency"
+        ) {
+          matrix["Expert: Non-Emergency | Nurse: Non-Emergency"]++;
         }
       });
 
-      // Sort the data by counts in descending order
-      const sortedArrivalCounts = Object.entries(arrivalCounts)
-        .sort((a, b) => b[1] - a[1]) // Sort by count (value) in descending order
-        .map(([key, value]) => ({ mode: key, count: value }));
-
-      // Extract the sorted labels and data for the chart
-      const labels = sortedArrivalCounts.map((entry) => entry.mode);
-      const data = sortedArrivalCounts.map((entry) => entry.count);
-
-      // Total for calculating percentages
-      const total = data.reduce((sum, value) => sum + value, 0);
-
-      new Chart(document.getElementById("nurseDiagnosisChart"), {
-        type: "doughnut",
-        data: {
-          labels: labels,
-          datasets: [
-            {
-              label: "Nurse Diagnosis Chart",
-              data: data,
-              backgroundColor: ["#880808", "#00000"],
-              borderWidth: 1,
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            datalabels: {
-              formatter: (value, context) => {
-                const percentage = ((value / total) * 100).toFixed(1); // Calculate percentage
-                return `${percentage}%`; // Display percentage
-              },
-              color: "#fff", // Label text color
-              font: {
-                weight: "bold",
-              },
-              align: "center",
-            },
-            legend: {
-              position: "top", // Position the legend
-            },
-          },
-        },
-      });
-    },
-    async timeAtTriage() {
-      await this.loadCSVData();
-
-      const binWidth = 1.5; // Set each bin range to 1.5
-      const minDuration = 0; // Start from 0
-      const maxDuration = 18; // End at 18
-
-      // Create bins for each range (0-1.5, 1.5-3.0, etc.)
-      const numBins = Math.ceil((maxDuration - minDuration) / binWidth);
-      const bins = Array(numBins).fill(0); // Initialize bins to 0
-
-      // Get the "KTAS duration_min" values and filter out any null or undefined values
-      const durationValues = this.triageData
-        .map((entry) => entry["KTAS duration_min"])
-        .filter((value) => value !== null && value !== undefined);
-
-      // Distribute data points into bins based on the bin width of 1.5
-      durationValues.forEach((value) => {
-        const binIndex = Math.min(Math.floor(value / binWidth), numBins - 1); // Ensure binIndex is within the range of bins
-        bins[binIndex]++;
-      });
-
-      // Generate the bin range labels for the y-axis (counts of patients in each bin)
-      const counts = bins; // Counts of patients per bin
-
-      // Prepare the data for the chart
-      const labels = counts; // Set the labels as the counts instead of the ranges
-
-      // Create the histogram chart
-      new Chart(document.getElementById("triageTimeDistChart"), {
-        type: "bar", // Bar chart
-        data: {
-          labels: labels, // Counts as x-axis labels
-          datasets: [
-            {
-              label: "Average time at Triage in minutes",
-              data: bins,
-              backgroundColor: "#000000", // Bar color
-              borderWidth: 0.5,
-              borderRadius: 10, // Rounded corners for the bars
-              categoryPercentage: 0.9, // Control the width of each bar (reduce category percentage to reduce space between bars)
-              barPercentage: 1, // Ensure bars fit within each category without gaps
-            },
-          ],
-        },
-        options: {
-          layout: {
-            padding: 20,
-          },
-          indexAxis: "x", // Set this to 'y' to make the bars horizontal
-          responsive: true,
-          scales: {
-            x: {
-              beginAtZero: true, // Ensure bars start at zero on the x-axis
-              grid: {
-                display: false, // Remove grid lines from the x-axis
-              },
-              ticks: {
-                display: true, // Show counts as labels on the x-axis
-              },
-            },
-            y: {
-              ticks: {
-                display: false, // Show counts as labels on the x-axis
-              },
-              beginAtZero: true, // Ensure bars start at zero on the y-axis
-              grid: {
-                display: false, // Remove grid lines from the y-axis
-              },
-            },
-          },
-        },
-      });
-    },
-    async expertDiagnosisChart() {
-      await this.loadCSVData();
-
-      const arrivalCounts = {};
-      this.triageData.forEach((entry) => {
-        const mode = entry["KTAS_expert"];
-        if (mode) {
-          arrivalCounts[mode] = (arrivalCounts[mode] || 0) + 1;
-        }
-      });
-
-      // Sort the data by counts in descending order
-      const sortedArrivalCounts = Object.entries(arrivalCounts)
-        .sort((a, b) => b[1] - a[1])
-        .map(([key, value]) => ({ mode: key, count: value }));
-
-      // Extract the sorted labels and data for the chart
-      const labels = sortedArrivalCounts.map((entry) => entry.mode);
-      const data = sortedArrivalCounts.map((entry) => entry.count);
-
-      const total = data.reduce((sum, value) => sum + value, 0); // Total count for percentage calculation
-
-      new Chart(document.getElementById("expertDiagnosisChart"), {
-        type: "doughnut",
-        data: {
-          labels: labels,
-          datasets: [
-            {
-              label: "Expert Diagnosis Chart",
-              data: data,
-              backgroundColor: ["#880808", "#00000"],
-              borderWidth: 1,
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            datalabels: {
-              formatter: (value, context) => {
-                const percentage = ((value / total) * 100).toFixed(1); // Calculate percentage
-                return `${percentage}%`; // Display percentage
-              },
-              color: "#fff", // Label text color
-              font: {
-                weight: "bold",
-                size: 14,
-              },
-              align: "center",
-              anchor: "center",
-            },
-            legend: {
-              position: "top", // Position the legend
-            },
-          },
-        },
-      });
-    },
-
-    async numOfPatientsPerHour() {
-      await this.loadCSVData();
-
-      const binWidth = 1.5; // Set each bin range to 1.5
-      const minDuration = 0; // Start from 0
-      const maxDuration = 18; // End at 18
-
-      // Create bins for each range (0-1.5, 1.5-3.0, etc.)
-      const numBins = Math.ceil((maxDuration - minDuration) / binWidth);
-      const bins = Array(numBins).fill(0); // Initialize bins to 0
-
-      // Get the "KTAS duration_min" values and filter out any null or undefined values
-      const durationValues = this.triageData
-        .map((entry) => entry["Patients number per hour	"])
-        .filter((value) => value !== null && value !== undefined);
-
-      // Distribute data points into bins based on the bin width of 1.5
-      durationValues.forEach((value) => {
-        const binIndex = Math.min(Math.floor(value / binWidth), numBins - 1); // Ensure binIndex is within the range of bins
-        bins[binIndex]++;
-      });
-
-      // Generate the bin range labels for the y-axis (counts of patients in each bin)
-      const counts = bins; // Counts of patients per bin
-
-      // Prepare the data for the chart
-      const labels = counts; // Set the labels as the counts instead of the ranges
-
-      // Create the histogram chart
-      new Chart(document.getElementById("patientsPerHRModeChart"), {
-        type: "bar", // Bar chart
-        data: {
-          labels: labels, // Counts as x-axis labels
-          datasets: [
-            {
-              label: "Average time at Triage in minutes",
-              data: bins,
-              backgroundColor: "#000000", // Bar color
-              borderWidth: 0.5,
-              borderRadius: 10, // Rounded corners for the bars
-              categoryPercentage: 0.9, // Control the width of each bar (reduce category percentage to reduce space between bars)
-              barPercentage: 1, // Ensure bars fit within each category without gaps
-            },
-          ],
-        },
-        options: {
-          layout: {
-            padding: 20,
-          },
-          indexAxis: "x", // Set this to 'y' to make the bars horizontal
-          responsive: true,
-          scales: {
-            x: {
-              beginAtZero: true, // Ensure bars start at zero on the x-axis
-              grid: {
-                display: false, // Remove grid lines from the x-axis
-              },
-              ticks: {
-                display: true, // Show counts as labels on the x-axis
-              },
-            },
-            y: {
-              ticks: {
-                display: false, // Show counts as labels on the x-axis
-              },
-              beginAtZero: true, // Ensure bars start at zero on the y-axis
-              grid: {
-                display: false, // Remove grid lines from the y-axis
-              },
-            },
-          },
-        },
-      });
+      this.expertNurseEmergencyAlignment =
+        matrix["Expert: Emergency | Nurse: Emergency"];
+      this.expertNurseEmergencyNonEmergencyAlignment =
+        matrix["Expert: Emergency | Nurse: Non-Emergency"];
+      this.expertNurseNonEmergencyEmergencyAlignment =
+        matrix["Expert: Non-Emergency | Nurse: Emergency"];
+      this.expertNurseNonEmergencyNoEmergencyAlignment =
+        matrix["Expert: Non-Emergency | Nurse: Non-Emergency"];
     },
   },
   mounted() {
     Chart.register(ChartDataLabels);
-    // Call patientArrivalMeans method when the component is mounted
-    this.nurseDiagnosisChart();
-    // this.expertDiagnosisChart();
-    this.timeAtTriage();
-    this.numOfPatientsPerHour();
+    Chart.register(TreemapController, TreemapElement);
+    this.prepareComparisonMatrix();
   },
 };
 </script>
