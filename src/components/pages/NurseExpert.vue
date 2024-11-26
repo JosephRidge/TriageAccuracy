@@ -145,7 +145,6 @@ export default {
       // Extract the sorted labels and data for the chart
       const labels = sortedArrivalCounts.map((entry) => entry.mode);
       const data = sortedArrivalCounts.map((entry) => entry.count);
-
       const total = data.reduce((sum, value) => sum + value, 0); // Total count for percentage calculation
 
       new Chart(document.getElementById("expertDiagnosisChart"), {
@@ -187,7 +186,6 @@ export default {
   },
   mounted() {
     Chart.register(ChartDataLabels);
-    // Call patientArrivalMeans method when the component is mounted
     this.nurseDiagnosisChart();
     this.expertDiagnosisChart();
   },

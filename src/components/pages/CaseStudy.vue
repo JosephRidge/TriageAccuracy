@@ -1,5 +1,5 @@
 <template>
-  <div class="px-10 text-left w-screen">
+  <div class="px-10 text-left w-screen ">
     <!--  case study  -->
     <div class="capitalize font-black text-4xl py-10">
       {{ studyArea }}
@@ -8,44 +8,58 @@
       <div class="py-2 w-3/4">
         <!-- title -->
         <div>
-          <div class="text-2xl">
+          <div class="text-xl">
             Korea has a Population:
             <span class="font-bold">26 Million people</span> as of 2023.
           </div>
-          <div class="py-2 text-lg">
-            <div class="font-bold">Korean Triage and Acuity Scale (KTAS)</div>
-            KTAS, introduced in 2016, is a five-level triage system used across
-            Korea to asses patients to determine who should receive treatment
-            first .
+          <div class="py-4">
+            <div class="font-bold text-xl">Triage and Acuity Scale</div>
+            Triage and Acuity Scale is a system used to rapidly assess and
+            prioritize patients’ needs in emergency departments (EDs) and other
+            healthcare settings. Components Triage: The process of sorting
+            patients based on their urgency of need, from most critical to least
+            critical. Acuity: A measure of a patient’s severity of illness or
+            injure , typically assessed using standardized criteria.
           </div>
-          <div class="py-2 text-lg">
-            <div class="font-bold">
-              Problem: Mistriage in Emergency Departments
-            </div>
-            Mistriage occurs when patients are incorrectly categorized, leading
-            to delays, overcrowding, and compromised patient care.
-          </div>
-          <div class="py-2 text-lg">
-            <div class="font-bold">Objective</div>
-            Assess the accuracy of KTAS and identify causes of mistriage.
-          </div>
-          <div class="py-2 text-lg">
-            <div class="font-bold">Dataset</div>
-            <div>
-              source:
+          <!--  triage scales -->
+        
+            <div class="font-bold text-xl">
+              Types of Triage Scales: [<a
+                href="https://doi.org/10.7748/en2009.07.17.4.16.c7122"
+                class="hover:cursor-pointer text-blue-700 hover:underline"
+                >1</a
+              >,
               <a
-                class="text-blue-800 font-bold"
-                href="https://www.kaggle.com/code/ilkeryildiz/triage-application-with-machine-learning-models/notebook"
-                >main dataset</a
-              >
-              and reference article:<a
-                class="text-blue-800 font-bold"
-                href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0216972"
-                >paper</a
-              >
+                href="https://doi.org/10.3238/arztebl.2010.0892"
+                class="hover:cursor-pointer text-blue-700 hover:underline"
+                >2</a
+              >]
             </div>
+            As triage scales should be matched to the specific medical
+            environment in which they are used, the application of a triage
+            scale developed for one country should be approached with caution
+            when applied to another country. Examples of Triage scales that
+            exist are:
+            <ul style="list-style-type: disc" class="px-7">
+              <li>Korean Triage and Acuity Scale (KTAS)</li>
+              <li>Canadian Triage and Acuity Scale (CTAS)</li>
+              <li>Australian Triage Scale (ATS)</li>
+              <li>Manchester Triage Scale</li>
+            </ul> 
+
+          <div>
+            <div class="font-bold text-xl pt-2">KTAS</div>
+            KTAS was developed based on the CTAS and has been used nationwide in
+            South Korea(since 2016). It is composed of five levels:
+
+            <ul style="list-style-type: disc" class="px-7">
+              <li>Level 1: Critical</li>
+              <li>Level 2: Urgent Level</li>
+              <li>Level 3: Semi-urgent</li>
+              <li>Level 4: Less urgent</li>
+              <li>Level 5: Non-urgent</li>
+            </ul>
           </div>
-          <div></div>
         </div>
       </div>
       <!--  death causes -->
@@ -62,13 +76,25 @@
           ></canvas>
         </div>
       </div>
+    </div> 
+     <div class="flex">
+      <div class="">
+        Reference article:<a
+          class="text-blue-800 font-bold"
+          href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0216972"
+        >
+          paper</a
+        > 
     </div>
-
-    <RouterLink
-      to="/patients"
-      class="rounded-full bg-gray-950 hover:bg-black w-fit px-4 py-2 my-6 scale-90 hover:cursor-pointer text-white"
-      >let's start</RouterLink
-    >
+   
+     </div>
+     <div class="mx-10 flex justify-end">
+      <RouterLink
+        to="/dataSetOverview"
+        class="rounded-full bg-[#1446A0] hover:bg-black w-fit px-10 py-2 my-6  hover:cursor-pointer text-white"
+        >Dataset Overview</RouterLink
+      >
+    </div>
   </div>
 </template>
 
@@ -106,29 +132,33 @@ export default {
       const labels = this.diseases.map((d) => d.name);
       const data = this.diseases.map((d) => d.count);
 
+      // Generate colors with decreasing opacity
+      const colors = data.map((_, index) => {
+        const opacity = 1 - index * 0.1; // Decrease opacity for each bar
+        return `rgba(136, 8, 8, ${Math.max(opacity, 0.5)})`; // Minimum opacity of 0.2
+      });
+
       new Chart(document.getElementById("diseaseChart"), {
         type: "bar",
         data: {
           labels: labels,
           datasets: [
             {
-              label: "Deaths Population per 100,000 ",
+              label: "Deaths per 100 000 population",
               data: data,
-              backgroundColor: "#FF6384", // Color for bars
-              borderColor: "#00000",
-              backgroundColor: "#000000", // Bar color
-              borderWidth: 0.5,
-              borderRadius: 200,
+              backgroundColor: colors, // Apply dynamic colors
+              borderColor: "#880808",
             },
           ],
         },
         options: {
+          indexAxis: "y",
           responsive: true,
           scales: {
             y: {
               beginAtZero: true,
               grid: {
-                display: false, // Remove grid lines from the x-axis
+                display: false, // Remove grid lines from the y-axis
               },
             },
             x: {
@@ -141,12 +171,23 @@ export default {
             legend: {
               position: "top",
             },
+            datalabels: {
+              color: "#FFFFFF", // Set label color to white
+              anchor: "center", // Center-align labels within bars
+              align: "center", // Vertically align labels in the middle
+              formatter: (value) => value, // Display the data value
+              font: {
+                size: 12, // Adjust font size
+              },
+            },
           },
         },
+        plugins: [ChartDataLabels], // Register the plugin
       });
     },
   },
   mounted() {
+    Chart.register(ChartDataLabels);
     this.showCausesOfDeath();
   },
 };
