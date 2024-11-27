@@ -2,6 +2,7 @@
   <div
     class="px-24 text-left w-full h-screen tracking-widest leading-loose grid place-content-center"
   >
+  
    <div class="flex">
     <div class="w-1/2">
       <!-- title -->
