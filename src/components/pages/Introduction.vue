@@ -2,6 +2,7 @@
   <div
     class="px-24 text-left w-full h-screen tracking-widest leading-loose grid place-content-center"
   >
+  
    <div class="flex">
     <div class="w-1/2">
       <!-- title -->
@@ -16,7 +17,7 @@
       <img src="../../assets/images/ambulance.jpg" alt="" srcset="" class="rounded-full hover:grayscale">
     </div>
    </div>
-   <div class="flex justify-start">   <RouterLink to="/home" class="rounded-full bg-[#1446A0] hover:bg-black  w-fit px-8 py-2 my-6   hover:cursor-pointer   text-white">start here</RouterLink>
+   <div class="flex justify-start">   <RouterLink to="/home" class="rounded-full bg-[#1446A0] hover:bg-black w-fit px-8 py-2 my-6 hover:cursor-pointer   text-white">start here</RouterLink>
    </div>
 
   </div>

@@ -14,8 +14,8 @@
       Mistriage occurs when patients are incorrectly categorized, leading to
       delays, overcrowding, and compromised patient care.
     </div>
+    
     <!-- objectives -->
-
     <div class="py-2 text-lg">
       <div class="font-bold">Objective</div>
       Assess the accuracy of KTAS and identify causes of mistriage.
